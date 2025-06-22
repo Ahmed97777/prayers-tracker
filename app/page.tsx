@@ -2,19 +2,20 @@
 import React, { useState } from 'react';
 import { Plus, Moon, Sun, CloudSun, Sunset, MoonStar, Clock, User, Users, X, Ban, Clock4 } from 'lucide-react';
 import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
+import FriendsPage from '@/components/logic/FriendsSharing';
 
 const prayers = [
-  { name: 'Fajr', icon: Moon, status: 'late' as const, time: '5:30 AM' },
-  { name: 'Dhuhr', icon: Sun, status: 'on-time' as const, time: '12:15 PM' },
-  { name: 'Asr', icon: CloudSun, status: 'none' as const, time: '3:45 PM' },
-  { name: 'Maghrib', icon: Sunset, status: 'none' as const, time: '6:20 PM' },
-  { name: 'Isha', icon: MoonStar, status: 'none' as const, time: '7:45 PM' },
+  { name: 'Fajr', icon: Moon, status: 'late' as const },
+  { name: 'Dhuhr', icon: Sun, status: 'on-time' as const },
+  { name: 'Asr', icon: CloudSun, status: 'none' as const },
+  { name: 'Maghrib', icon: Sunset, status: 'none' as const },
+  { name: 'Isha', icon: MoonStar, status: 'none' as const},
 ];
 
 const statusStyles = {
   late: { color: 'bg-red-500', icon: Clock, label: 'Late', textColor: 'text-red-600' },
-  'on-time': { color: 'bg-amber-500', icon: User, label: 'On time', textColor: 'text-amber-600' },
-  jamaah: { color: 'bg-green-500', icon: Users, label: 'In jamaah', textColor: 'text-green-600' },
+  'on-time': { color: 'bg-green-500', icon: User, label: 'On time', textColor: 'text-green-600' },
+  jamaah: { color: 'bg-yellow-500', icon: Users, label: 'In jamaah', textColor: 'text-yellow-600' },
   'not-prayed': { color: 'bg-gray-400', icon: Ban, label: 'Not prayed', textColor: 'text-gray-600' },
   none: { color: 'bg-gray-200', icon: null, label: 'Pending', textColor: 'text-gray-400' },
 };
@@ -58,7 +59,6 @@ const PrayerCard = ({ prayer, onSelect }: { prayer: typeof prayers[0], onSelect:
             </div>
             <div>
               <h3 className="font-semibold text-lg text-gray-900">{prayer.name}</h3>
-              <p className="text-sm text-gray-500">{prayer.time}</p>
             </div>
           </div>
           <div className="flex items-center space-x-2">
@@ -91,13 +91,13 @@ export default function Home() {
   ];
 
   const prayerStatusOptions = [
-    { id: 'not-prayed', label: 'Not prayed', icon: Ban, color: 'hover:bg-red-50 hover:border-red-200' },
     { id: 'late', label: 'Late', icon: Clock4, color: 'hover:bg-red-50 hover:border-red-200' },
-    { id: 'on-time', label: 'On time', icon: User, color: 'hover:bg-amber-50 hover:border-amber-200' },
-    { id: 'jamaah', label: 'In jamaah', icon: Users, color: 'hover:bg-green-50 hover:border-green-200' },
+    { id: 'on-time', label: 'On time', icon: User, color: 'hover:bg-green-50 hover:border-green-200' },
+    { id: 'jamaah', label: 'In jamaah', icon: Users, color: 'hover:bg-yellow-50 hover:border-yellow-200' },
   ];
 
   return (
+    <>
     <Drawer open={!!selectedPrayer} onOpenChange={(isOpen) => !isOpen && setSelectedPrayer(null)}>
       <div className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
         <div className="container mx-auto max-w-md p-4">
@@ -172,5 +172,10 @@ export default function Home() {
         </div>
       </DrawerContent>
     </Drawer>
+
+     {/* Friends Sharing */}
+    <FriendsPage/>
+
+    </>
   );
 }
