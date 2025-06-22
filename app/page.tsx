@@ -1,103 +1,176 @@
-import Image from "next/image";
+"use client";
+import React, { useState } from 'react';
+import { Plus, Moon, Sun, CloudSun, Sunset, MoonStar, Clock, User, Users, X, Ban, Clock4 } from 'lucide-react';
+import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerTrigger } from "@/components/ui/drawer";
+
+const prayers = [
+  { name: 'Fajr', icon: Moon, status: 'late' as const, time: '5:30 AM' },
+  { name: 'Dhuhr', icon: Sun, status: 'on-time' as const, time: '12:15 PM' },
+  { name: 'Asr', icon: CloudSun, status: 'none' as const, time: '3:45 PM' },
+  { name: 'Maghrib', icon: Sunset, status: 'none' as const, time: '6:20 PM' },
+  { name: 'Isha', icon: MoonStar, status: 'none' as const, time: '7:45 PM' },
+];
+
+const statusStyles = {
+  late: { color: 'bg-red-500', icon: Clock, label: 'Late', textColor: 'text-red-600' },
+  'on-time': { color: 'bg-amber-500', icon: User, label: 'On time', textColor: 'text-amber-600' },
+  jamaah: { color: 'bg-green-500', icon: Users, label: 'In jamaah', textColor: 'text-green-600' },
+  'not-prayed': { color: 'bg-gray-400', icon: Ban, label: 'Not prayed', textColor: 'text-gray-600' },
+  none: { color: 'bg-gray-200', icon: null, label: 'Pending', textColor: 'text-gray-400' },
+};
+
+const fixedDate = new Date(2025, 5, 14);
+
+const formatDate = (date: Date) => {
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June',
+    'July', 'August', 'September', 'October', 'November', 'December'
+  ];
+  
+  return `${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`;
+};
+
+const DayButton = ({ day, date, selected }: { day: string; date: number; selected?: boolean }) => (
+  <button
+    className={`flex flex-col items-center justify-center w-12 h-16 rounded-xl transition-all duration-200 ${
+      selected 
+        ? 'bg-blue-600 text-white shadow-lg scale-105' 
+        : 'bg-white text-gray-600 hover:bg-gray-50 shadow-sm border border-gray-100'
+    }`}
+  >
+    <span className="text-xs font-medium">{day}</span>
+    <span className="text-lg font-bold mt-1">{date}</span>
+  </button>
+);
+
+const PrayerCard = ({ prayer, onSelect }: { prayer: typeof prayers[0], onSelect: () => void }) => {
+  const Icon = prayer.icon;
+  const statusInfo = statusStyles[prayer.status];
+  const StatusIcon = statusInfo.icon;
+
+  return (
+    <DrawerTrigger asChild onClick={onSelect}>
+      <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 cursor-pointer hover:scale-[1.02] active:scale-[0.98]">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-4">
+            <div className="w-12 h-12 bg-blue-50 rounded-xl flex items-center justify-center">
+              <Icon className="text-blue-600" size={24} />
+            </div>
+            <div>
+              <h3 className="font-semibold text-lg text-gray-900">{prayer.name}</h3>
+              <p className="text-sm text-gray-500">{prayer.time}</p>
+            </div>
+          </div>
+          <div className="flex items-center space-x-2">
+            {StatusIcon && (
+              <div className={`w-8 h-8 rounded-full ${statusInfo.color} flex items-center justify-center`}>
+                <StatusIcon size={16} className="text-white" />
+              </div>
+            )}
+            <span className={`text-sm font-medium ${statusInfo.textColor}`}>
+              {statusInfo.label}
+            </span>
+          </div>
+        </div>
+      </div>
+    </DrawerTrigger>
+  );
+};
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [selectedPrayer, setSelectedPrayer] = useState<typeof prayers[0] | null>(null);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const week = [
+    { day: 'SUN', date: 8 },
+    { day: 'MON', date: 9 },
+    { day: 'TUE', date: 10 },
+    { day: 'WED', date: 11 },
+    { day: 'THU', date: 12 },
+    { day: 'FRI', date: 13 },
+    { day: 'SAT', date: 14 },
+  ];
+
+  const prayerStatusOptions = [
+    { id: 'not-prayed', label: 'Not prayed', icon: Ban, color: 'hover:bg-red-50 hover:border-red-200' },
+    { id: 'late', label: 'Late', icon: Clock4, color: 'hover:bg-red-50 hover:border-red-200' },
+    { id: 'on-time', label: 'On time', icon: User, color: 'hover:bg-amber-50 hover:border-amber-200' },
+    { id: 'jamaah', label: 'In jamaah', icon: Users, color: 'hover:bg-green-50 hover:border-green-200' },
+  ];
+
+  return (
+    <Drawer open={!!selectedPrayer} onOpenChange={(isOpen) => !isOpen && setSelectedPrayer(null)}>
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+        <div className="container mx-auto max-w-md p-4">
+          {/* Header */}
+          <header className="flex justify-between items-center py-6">
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">
+                Today, {formatDate(fixedDate)}
+              </h1>
+              <p className="text-sm text-gray-600 mt-1">18 Thul-Hijjah 1446</p>
+            </div>
+            <button className="bg-blue-600 hover:bg-blue-700 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center transition-colors duration-200">
+              <Plus size={20} />
+            </button>
+          </header>
+
+          {/* Week Navigation */}
+          <div className="mb-8">
+            <div className="flex justify-between space-x-1">
+              {week.map((dayInfo) => (
+                <DayButton key={dayInfo.day} {...dayInfo} selected={dayInfo.day === 'SAT'} />
+              ))}
+            </div>
+          </div>
+
+          {/* Prayers Section */}
+          <div>
+            <h2 className="text-sm font-semibold text-gray-600 uppercase tracking-wider mb-4">
+              Today's Prayers
+            </h2>
+            <div className="space-y-3">
+              {prayers.map((prayer) => (
+                <PrayerCard key={prayer.name} prayer={prayer} onSelect={() => setSelectedPrayer(prayer)} />
+              ))}
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+
+      {/* Drawer */}
+      <DrawerContent className="max-w-md mx-auto">
+        <DrawerHeader className="pb-4">
+          {selectedPrayer && (
+            <div className="flex flex-col items-center text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4">
+                <selectedPrayer.icon size={32} className="text-blue-600" />
+              </div>
+              <DrawerTitle className="text-xl font-bold text-gray-900">
+                {selectedPrayer.name} Prayer
+              </DrawerTitle>
+              <DrawerDescription className="text-gray-600 mt-2">
+                How did you complete your {selectedPrayer.name} prayer today?
+              </DrawerDescription>
+            </div>
+          )}
+        </DrawerHeader>
+        
+        <div className="px-4 pb-6">
+          <div className="space-y-2">
+            {prayerStatusOptions.map((option) => (
+              <button 
+                key={option.id} 
+                className={`w-full flex items-center p-4 rounded-xl border border-gray-200 text-left transition-all duration-200 ${option.color}`}
+              >
+                <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
+                  <option.icon className="text-gray-600" size={20} />
+                </div>
+                <span className="font-medium text-gray-900">{option.label}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 }
