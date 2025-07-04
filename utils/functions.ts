@@ -25,3 +25,15 @@ export const formatDate = (date: Date) => {
   ];
   return `${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`;
 };
+
+export const historyFormatDate = (dateStr: string) => {
+  const date = new Date(dateStr);
+  date.setDate(date.getDate() + 1);
+
+  return date.toLocaleDateString(undefined, {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};

@@ -137,3 +137,105 @@ export const prayerStatusOptions = [
     color: "hover:bg-yellow-50 hover:border-yellow-200",
   },
 ];
+
+export type HistoryLog = {
+  prayerId: number;
+  status: "ON_TIME" | "LATE" | "JAMAAH";
+};
+
+export type FriendData = {
+  friendId: string;
+  friendName: string;
+  logs: HistoryLog[];
+};
+
+export type DayData = {
+  date: string;
+  user: {
+    logs: HistoryLog[];
+  };
+  friends: FriendData[];
+};
+
+export type HistoryResponse = {
+  data: DayData[];
+  prayers: Prayer[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+};
+
+export const statusConfig = {
+  ON_TIME: {
+    color: "bg-emerald-500 hover:bg-emerald-600",
+    bgColor: "bg-emerald-50",
+    textColor: "text-emerald-700",
+    label: User,
+    name: "On Time",
+  },
+  LATE: {
+    color: "bg-red-500 hover:bg-red-600",
+    bgColor: "bg-red-50",
+    textColor: "text-red-700",
+    label: Clock,
+    name: "Late",
+  },
+  JAMAAH: {
+    color: "bg-amber-500 hover:bg-amber-600",
+    bgColor: "bg-amber-50",
+    textColor: "text-amber-700",
+    label: Users,
+    name: "Jamaah",
+  },
+  UNSET: {
+    color: "bg-gray-300 hover:bg-gray-400",
+    bgColor: "bg-gray-50",
+    textColor: "text-gray-500",
+    label: Ban,
+    name: "Not Set",
+  },
+};
+
+export const getCompletionBadgeColor = (percentage: number) => {
+  if (percentage >= 80) return "bg-emerald-100 text-emerald-800";
+  if (percentage >= 60) return "bg-amber-100 text-amber-800";
+  if (percentage >= 40) return "bg-orange-100 text-orange-800";
+  return "bg-red-100 text-red-800";
+};
+
+export interface StatusStats {
+  count: number;
+  percentage: number;
+}
+
+export interface DayCompletion {
+  date: string;
+  completion: number;
+}
+
+export interface Statistics {
+  totalPrayers: number;
+  onTime: StatusStats;
+  late: StatusStats;
+  jamaah: StatusStats;
+  unset: StatusStats;
+  overallCompletion: number;
+  dailyAverage: number;
+  totalDays: number;
+}
+
+export interface PrayerStatisticsProps {
+  historyData: DayData[];
+  prayers: Prayer[];
+}
+
+export interface LeaderboardEntry {
+  name: string;
+  points: number;
+  isCurrentUser: boolean;
+}
