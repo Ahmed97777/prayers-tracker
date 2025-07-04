@@ -1,27 +1,13 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import {
-  Moon,
-  Sun,
-  CloudSun,
-  Sunset,
-  MoonStar,
-  Clock,
-  User,
-  Users,
-  Ban,
-  Clock4,
-} from "lucide-react";
+import { Moon } from "lucide-react";
 
 import {
   DatabasePrayer,
   DatabasePrayerLog,
-  defaultPrayers,
   Prayer,
   prayerIconMap,
   PrayerLog,
-  prayerStatusOptions,
 } from "@/utils/constants";
 import PrayerTracker from "./PrayerTracker";
 

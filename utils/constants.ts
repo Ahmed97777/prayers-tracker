@@ -23,6 +23,42 @@ export type PrayerLog = {
   status: "ON_TIME" | "LATE" | "JAMAAH";
 };
 
+export type Friend = {
+  id: string;
+  name: string;
+  email: string;
+};
+
+export type FriendLogSummary = {
+  friendId: string;
+  friendName: string;
+  logs: { prayerId: number; status: string }[];
+};
+
+export const friendsStatusStyles = {
+  late: {
+    color: "bg-red-500",
+    icon: Clock,
+    label: "Late",
+    textColor: "text-red-600",
+    bgColor: "bg-red-50",
+  },
+  "on-time": {
+    color: "bg-green-500",
+    icon: User,
+    label: "On time",
+    textColor: "text-green-600",
+    bgColor: "bg-green-50",
+  },
+  jamaah: {
+    color: "bg-yellow-500",
+    icon: Users,
+    label: "In jamaah",
+    textColor: "text-yellow-600",
+    bgColor: "bg-yellow-50",
+  },
+};
+
 export type DatabasePrayerLog = {
   id: number;
   userId: string;
