@@ -330,15 +330,17 @@ const PrayerStatistics: React.FC<PrayerStatisticsProps> = ({
         </div>
 
         {/* Quick Insights */}
-        <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
-          <div className="text-sm text-blue-700 space-y-1">
-            {stats.jamaah.count > 0 && (
-              <p>
-                🕌 Great job praying {stats.jamaah.count} prayers in Jamaah!
-              </p>
-            )}
+        {stats.jamaah.count > 0 && (
+          <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+            <div className="text-sm text-blue-700 space-y-1">
+              {stats.jamaah.count > 0 && (
+                <p>
+                  🕌 Great job praying {stats.jamaah.count} prayers in Jamaah!
+                </p>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <div className="space-y-3">
           <h4 className="font-semibold text-gray-900 flex items-center gap-2">
