@@ -28,7 +28,7 @@ export const formatDate = (date: Date) => {
 
 export const historyFormatDate = (dateStr: string) => {
   const date = new Date(dateStr);
-  date.setDate(date.getDate() + 1);
+  // date.setDate(date.getDate() + 1);
 
   return date.toLocaleDateString(undefined, {
     weekday: "long",
