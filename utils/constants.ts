@@ -11,30 +11,6 @@ import {
   Clock4,
 } from "lucide-react";
 
-export type Prayer = {
-  id: number;
-  name: string;
-  icon: any;
-};
-
-export type PrayerLog = {
-  id: number;
-  prayerId: number;
-  status: "ON_TIME" | "LATE" | "JAMAAH";
-};
-
-export type Friend = {
-  id: string;
-  name: string;
-  email: string;
-};
-
-export type FriendLogSummary = {
-  friendId: string;
-  friendName: string;
-  logs: { prayerId: number; status: string }[];
-};
-
 export const friendsStatusStyles = {
   late: {
     color: "bg-red-500",
@@ -57,19 +33,6 @@ export const friendsStatusStyles = {
     textColor: "text-yellow-600",
     bgColor: "bg-yellow-50",
   },
-};
-
-export type DatabasePrayerLog = {
-  id: number;
-  userId: string;
-  prayerId: number;
-  date: Date;
-  status: "ON_TIME" | "LATE" | "JAMAAH";
-};
-
-export type DatabasePrayer = {
-  id: number;
-  name: string;
 };
 
 // Default prayers with icons (can be overridden by props)
@@ -138,38 +101,6 @@ export const prayerStatusOptions = [
   },
 ];
 
-export type HistoryLog = {
-  prayerId: number;
-  status: "ON_TIME" | "LATE" | "JAMAAH";
-};
-
-export type FriendData = {
-  friendId: string;
-  friendName: string;
-  logs: HistoryLog[];
-};
-
-export type DayData = {
-  date: string;
-  user: {
-    logs: HistoryLog[];
-  };
-  friends: FriendData[];
-};
-
-export type HistoryResponse = {
-  data: DayData[];
-  prayers: Prayer[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-    hasNext: boolean;
-    hasPrev: boolean;
-  };
-};
-
 export const statusConfig = {
   ON_TIME: {
     color: "bg-emerald-500 hover:bg-emerald-600",
@@ -200,42 +131,3 @@ export const statusConfig = {
     name: "Not Set",
   },
 };
-
-export const getCompletionBadgeColor = (percentage: number) => {
-  if (percentage >= 80) return "bg-emerald-100 text-emerald-800";
-  if (percentage >= 60) return "bg-amber-100 text-amber-800";
-  if (percentage >= 40) return "bg-orange-100 text-orange-800";
-  return "bg-red-100 text-red-800";
-};
-
-export interface StatusStats {
-  count: number;
-  percentage: number;
-}
-
-export interface DayCompletion {
-  date: string;
-  completion: number;
-}
-
-export interface Statistics {
-  totalPrayers: number;
-  onTime: StatusStats;
-  late: StatusStats;
-  jamaah: StatusStats;
-  unset: StatusStats;
-  overallCompletion: number;
-  dailyAverage: number;
-  totalDays: number;
-}
-
-export interface PrayerStatisticsProps {
-  historyData: DayData[];
-  prayers: Prayer[];
-}
-
-export interface LeaderboardEntry {
-  name: string;
-  points: number;
-  isCurrentUser: boolean;
-}

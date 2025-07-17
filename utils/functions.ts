@@ -8,6 +8,13 @@ export function getWeekDates(centerDate: Date) {
   });
 }
 
+export const getCompletionBadgeColor = (percentage: number) => {
+  if (percentage >= 80) return "bg-emerald-100 text-emerald-800";
+  if (percentage >= 60) return "bg-amber-100 text-amber-800";
+  if (percentage >= 40) return "bg-orange-100 text-orange-800";
+  return "bg-red-100 text-red-800";
+};
+
 export const formatDate = (date: Date) => {
   const months = [
     "January",

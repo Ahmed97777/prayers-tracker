@@ -2,16 +2,15 @@
 
 import { Moon } from "lucide-react";
 
+import { prayerIconMap } from "@/utils/constants";
+import PrayerTracker from "./PrayerTracker";
 import {
   DatabasePrayer,
   DatabasePrayerLog,
   Prayer,
-  prayerIconMap,
   PrayerLog,
-} from "@/utils/constants";
-import PrayerTracker from "./PrayerTracker";
+} from "@/utils/types";
 
-// Component that accepts props from your home page
 export default function PrayerTrackerManager({
   prayers: dbPrayers,
   prayerLogs: dbPrayerLogs,
@@ -28,7 +27,7 @@ export default function PrayerTrackerManager({
   // Convert database prayers to component prayers (add icons)
   const prayers: Prayer[] = dbPrayers.map((prayer) => ({
     ...prayer,
-    icon: prayerIconMap[prayer.name] || Moon, // Default to Moon if no icon found
+    icon: prayerIconMap[prayer.name] || Moon,
   }));
 
   // Convert database prayer logs to component prayer logs (remove extra fields)

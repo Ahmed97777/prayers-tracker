@@ -1,10 +1,7 @@
 import { Moon, Sun, CloudSun, Sunset, MoonStar, User, X } from "lucide-react";
 
-import {
-  Friend,
-  FriendLogSummary,
-  friendsStatusStyles,
-} from "@/utils/constants";
+import { friendsStatusStyles } from "@/utils/constants";
+import { Friend, FriendLogSummary } from "@/utils/types";
 
 const prayers = [
   { name: "Fajr", icon: Moon, id: 1 },

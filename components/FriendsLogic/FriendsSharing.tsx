@@ -2,13 +2,10 @@
 import React, { useState, useEffect } from "react";
 import { UserPlus, Users, AlertCircle } from "lucide-react";
 import FriendCard from "./FriendCard";
-import {
-  Friend,
-  FriendLogSummary,
-  friendsStatusStyles,
-} from "@/utils/constants";
+import { friendsStatusStyles } from "@/utils/constants";
 import AddFriendDrawer from "./AddFriendDrawer";
 import { formatDate } from "@/utils/functions";
+import { Friend, FriendLogSummary } from "@/utils/types";
 
 interface FriendManagerProps {
   userId: string;

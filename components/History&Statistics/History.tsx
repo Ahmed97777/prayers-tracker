@@ -4,35 +4,21 @@ import { useState, useEffect } from "react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
   Loader2,
   Calendar,
   Users,
-  Filter,
   X,
   ChevronDown,
   ChevronRight,
-  RefreshCw,
 } from "lucide-react";
 import PrayerStatistics from "./PrayerStatistics";
-import {
-  DayData,
-  getCompletionBadgeColor,
-  HistoryLog,
-  HistoryResponse,
-  statusConfig,
-} from "@/utils/constants";
-import { historyFormatDate } from "@/utils/functions";
+import { statusConfig } from "@/utils/constants";
+import { getCompletionBadgeColor, historyFormatDate } from "@/utils/functions";
 import HistoryHeader from "./HistoryHeader";
 import DateFilter from "./DateFilter";
-
-export type Prayer = {
-  id: number;
-  name: string;
-  icon: any;
-};
+import { DayData, HistoryLog, HistoryResponse, Prayer } from "@/utils/types";
 
 interface HistoryProps {
   userId: string;

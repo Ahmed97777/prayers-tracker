@@ -1,9 +1,4 @@
-import {
-  defaultPrayers,
-  Prayer,
-  PrayerLog,
-  prayerStatusOptions,
-} from "@/utils/constants";
+import { defaultPrayers, prayerStatusOptions } from "@/utils/constants";
 import PrayerCard from "./PrayerCard";
 import { formatDate, getWeekDates } from "@/utils/functions";
 import { useEffect, useState } from "react";
@@ -16,6 +11,7 @@ import {
   DrawerDescription,
 } from "@/components/ui/drawer";
 import DayButton from "./DayButton";
+import { Prayer, PrayerLog } from "@/utils/types";
 
 interface PrayerTrackerProps {
   prayers: Prayer[];

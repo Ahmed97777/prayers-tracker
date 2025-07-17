@@ -9,19 +9,39 @@ import {
   Clock,
   Calendar,
 } from "lucide-react";
-import {
-  DayCompletion,
-  DayData,
-  HistoryLog,
-  LeaderboardEntry,
-  PrayerStatisticsProps,
-  Statistics,
-} from "@/utils/constants";
+import { DayData, HistoryLog, Prayer } from "@/utils/types";
 
-export type Prayer = {
-  id: number;
+interface DayCompletion {
+  date: string;
+  completion: number;
+}
+
+export interface StatusStats {
+  count: number;
+  percentage: number;
+}
+
+export interface Statistics {
+  totalPrayers: number;
+  onTime: StatusStats;
+  late: StatusStats;
+  jamaah: StatusStats;
+  unset: StatusStats;
+  overallCompletion: number;
+  dailyAverage: number;
+  totalDays: number;
+}
+
+export interface PrayerStatisticsProps {
+  historyData: DayData[];
+  prayers: Prayer[];
+}
+
+export interface LeaderboardEntry {
   name: string;
-};
+  points: number;
+  isCurrentUser: boolean;
+}
 
 const PrayerStatistics: React.FC<PrayerStatisticsProps> = ({
   historyData,
@@ -150,13 +170,6 @@ const PrayerStatistics: React.FC<PrayerStatisticsProps> = ({
       month: "short",
       day: "numeric",
     });
-  };
-
-  const getCompletionBadgeColor = (percentage: number): string => {
-    if (percentage >= 80) return "bg-emerald-100 text-emerald-800";
-    if (percentage >= 60) return "bg-amber-100 text-amber-800";
-    if (percentage >= 40) return "bg-orange-100 text-orange-800";
-    return "bg-red-100 text-red-800";
   };
 
   const stats = calculateStatistics();

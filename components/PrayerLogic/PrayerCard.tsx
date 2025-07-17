@@ -1,5 +1,6 @@
 import { DrawerTrigger } from "@/components/ui/drawer";
-import { Prayer, statusStyles } from "@/utils/constants";
+import { statusStyles } from "@/utils/constants";
+import { Prayer } from "@/utils/types";
 
 const PrayerCard = ({
   prayer,
