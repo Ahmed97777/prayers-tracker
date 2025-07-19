@@ -93,3 +93,71 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }
+
+export async function DELETE(req: NextRequest) {
+  try {
+    const session = await auth();
+
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Get current user's image URL
+    const currentUser = await db.user.findUnique({
+      where: { id: session.user.id },
+      select: { image: true }
+    });
+
+    if (!currentUser?.image) {
+      return NextResponse.json(
+        { error: "No profile image to delete" },
+        { status: 400 }
+      );
+    }
+
+    // Extract filename from current image URL if it's a Supabase URL
+    if (currentUser.image.includes('supabase')) {
+      try {
+        // Extract the file path from the Supabase URL
+        const urlParts = currentUser.image.split('/');
+        const bucketIndex = urlParts.findIndex(part => part === 'avatars');
+        
+        if (bucketIndex !== -1 && bucketIndex < urlParts.length - 1) {
+          // Get everything after 'avatars/' in the URL
+          const filePath = urlParts.slice(bucketIndex + 1).join('/');
+          
+          // Delete from Supabase Storage
+          const { error: deleteError } = await supabaseAdmin.storage
+            .from('avatars')
+            .remove([filePath]);
+
+          if (deleteError) {
+            console.error('Supabase delete error:', deleteError);
+            // Don't return error here, still update database even if file deletion fails
+          }
+        }
+      } catch (storageError) {
+        console.error('Error deleting from storage:', storageError);
+        // Continue to update database even if storage deletion fails
+      }
+    }
+
+    // Update user in database to remove image URL
+    await db.user.update({
+      where: { id: session.user.id },
+      data: {
+        image: null,
+        updatedAt: new Date(),
+      },
+    });
+
+    return NextResponse.json({ 
+      success: true, 
+      message: "Profile image deleted successfully" 
+    });
+
+  } catch (error) {
+    console.error('Server error:', error);
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
+  }
+}

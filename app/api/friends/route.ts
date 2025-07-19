@@ -15,6 +15,7 @@ export async function GET(req: NextRequest) {
       id: f.friend.id,
       name: f.friend.name,
       email: f.friend.email,
+      image: f.friend.image,
     }))
   );
 }
@@ -54,6 +55,7 @@ export async function POST(req: NextRequest) {
       id: f.friend.id,
       name: f.friend.name,
       email: f.friend.email,
+      image: f.friend.image,
     }))
   );
 }
@@ -76,6 +78,7 @@ export async function DELETE(req: NextRequest) {
       id: f.friend.id,
       name: f.friend.name,
       email: f.friend.email,
+      image: f.friend.image,
     }))
   );
 }

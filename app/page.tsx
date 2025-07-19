@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { getPrayersWithLogs } from "../lib/prayerService";
 import PrayerTrackerWithFriends from "@/components/PrayerTrackerWithFriends";
 import Link from "next/link";
-import SignOut from "@/components/auth_comps/SignOut";
 import { Button } from "@/components/ui/button";
 
 export default async function Page() {
@@ -30,7 +29,6 @@ export default async function Page() {
             History with Statistics
           </Button>
         </Link>
-        <SignOut />
       </div>
     </div>
   );

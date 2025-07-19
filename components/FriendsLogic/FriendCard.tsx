@@ -2,6 +2,7 @@ import { Moon, Sun, CloudSun, Sunset, MoonStar, User, X } from "lucide-react";
 
 import { friendsStatusStyles } from "@/utils/constants";
 import { Friend, FriendLogSummary } from "@/utils/types";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 const prayers = [
   { name: "Fajr", icon: Moon, id: 1 },
@@ -46,13 +47,23 @@ const FriendCard = ({
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
           <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center">
-            <span className="text-white font-semibold text-sm">
-              <Icon size={16} className={"text-white"} />
-            </span>
+            {friend.image ? (
+              <Avatar className="h-7 w-7">
+                {friend.image && (
+                  <AvatarImage src={friend.image || ""} alt="Profile" />
+                )}
+              </Avatar>
+            ) : (
+              <span className="text-white font-semibold text-sm">
+                <Icon size={16} className={"text-white"} />
+              </span>
+            )}
           </div>
           <div>
-            <h3 className="font-semibold text-gray-900">{friend.name}</h3>
-            <p className="text-sm text-gray-500">{friend.email}</p>
+            <h3 className="font-semibold text-gray-900">
+              {friend.name ? friend.name : friend.email}
+            </h3>
+            {/* <p className="text-sm text-gray-500">{friend.email}</p> */}
           </div>
         </div>
         <div className="flex items-center">

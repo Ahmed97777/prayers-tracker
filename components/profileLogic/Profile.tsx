@@ -21,9 +21,23 @@ import {
   Mail,
   Calendar,
   User,
+  Trash2,
 } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useRouter } from "next/navigation";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import Link from "next/link";
+import SignOut from "../auth_comps/SignOut";
 
 interface ProfileProps {
   className?: string;
@@ -42,6 +56,7 @@ export default function Profile({ className, session }: ProfileProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [name, setName] = useState(session?.user?.name || "");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
@@ -130,6 +145,32 @@ export default function Profile({ className, session }: ProfileProps) {
     }
   };
 
+  const handleImageDelete = async () => {
+    if (!session?.user?.id) return;
+
+    setIsDeleting(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch("/api/profile/image", {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to delete image");
+      }
+
+      router.refresh();
+
+      setSuccess("Profile image deleted successfully!");
+    } catch (error) {
+      setError("Failed to delete image. Please try again.");
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   const handleCancel = () => {
     setName(session?.user?.name || "");
     setIsEditing(false);
@@ -174,6 +215,13 @@ export default function Profile({ className, session }: ProfileProps) {
       {/* Profile Header Card */}
       <Card>
         <CardHeader>
+          <div className="mb-4">
+            <Link href={"/"}>
+              <Button variant={"outline"} className="cursor-pointer">
+                Go Back
+              </Button>
+            </Link>
+          </div>
           <CardTitle className="flex items-center gap-2">
             <User className="h-5 w-5" />
             My Profile
@@ -187,17 +235,21 @@ export default function Profile({ className, session }: ProfileProps) {
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative">
               <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
-                <AvatarImage src={session.user.image || ""} alt="Profile" />
+                {session.user.image && (
+                  <AvatarImage src={session.user.image || ""} alt="Profile" />
+                )}
                 <AvatarFallback className="text-lg sm:text-xl">
                   {session.user.name ? getInitials(session.user.name) : "U"}
                 </AvatarFallback>
               </Avatar>
+
+              {/* Upload Button */}
               <Button
                 size="sm"
                 variant="secondary"
                 className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full p-0 cursor-pointer"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
+                disabled={isUploading || isDeleting}
               >
                 {isUploading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -205,6 +257,45 @@ export default function Profile({ className, session }: ProfileProps) {
                   <Camera className="h-4 w-4" />
                 )}
               </Button>
+
+              {/* Delete Button - only show if user has an image */}
+              {session.user.image && (
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute -top-2 -right-2 h-8 w-8 rounded-full p-0 cursor-pointer"
+                      disabled={isUploading || isDeleting}
+                    >
+                      {isDeleting ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="h-4 w-4" />
+                      )}
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete Profile Image</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Are you sure you want to delete your profile image? This
+                        action cannot be undone.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleImageDelete}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                      >
+                        Delete Image
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              )}
+
               <input
                 ref={fileInputRef}
                 type="file"
@@ -219,9 +310,6 @@ export default function Profile({ className, session }: ProfileProps) {
                 {session.user.name || "Anonymous User"}
               </h3>
               <p className="text-muted-foreground">{session.user.email}</p>
-              {/* <Badge variant="secondary" className="mt-2">
-                Member since {formatDate(session.user.createdAt || new Date())}
-              </Badge> */}
             </div>
           </div>
 
@@ -302,6 +390,7 @@ export default function Profile({ className, session }: ProfileProps) {
                   Joined {formatDate(session.user.createdAt || new Date())}
                 </span>
               </div>
+              <SignOut />
             </div>
           </div>
 

@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/drawer";
 import DayButton from "./DayButton";
 import { Prayer, PrayerLog } from "@/utils/types";
+import { UserCog } from "lucide-react";
+import Link from "next/link";
 
 interface PrayerTrackerProps {
   prayers: Prayer[];
@@ -132,6 +134,9 @@ const PrayerTracker = ({
                 </h1>
                 <p className="text-sm text-gray-600 mt-1">Prayer Tracker</p>
               </div>
+              <Link href={"/user-profile"}>
+                <UserCog className="text-gray-600" size={28} />
+              </Link>
             </header>
 
             {/* Week Navigation */}
