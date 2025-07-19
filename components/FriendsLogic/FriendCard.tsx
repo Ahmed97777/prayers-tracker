@@ -49,7 +49,11 @@ const FriendCard = ({
           <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center overflow-hidden">
             {friend.image ? (
               <Avatar className="h-7 w-7">
-                <AvatarImage src={friend.image || ""} alt="Profile" />
+                <AvatarImage
+                  className="object-cover rounded-full"
+                  src={friend.image || ""}
+                  alt="Profile"
+                />
               </Avatar>
             ) : (
               <span className="text-white font-semibold text-sm">

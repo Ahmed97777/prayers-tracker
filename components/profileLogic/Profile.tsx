@@ -234,9 +234,13 @@ export default function Profile({ className, session }: ProfileProps) {
           {/* Avatar Section */}
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative">
-              <Avatar className="h-24 w-24 sm:h-32 sm:w-32">
+              <Avatar className="w-28 h-28">
                 {session.user.image && (
-                  <AvatarImage src={session.user.image || ""} alt="Profile" />
+                  <AvatarImage
+                    className="object-cover rounded-full"
+                    src={session.user.image || ""}
+                    alt="Profile"
+                  />
                 )}
                 <AvatarFallback className="text-lg sm:text-xl">
                   {session.user.name ? getInitials(session.user.name) : "U"}
