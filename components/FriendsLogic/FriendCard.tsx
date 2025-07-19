@@ -46,26 +46,30 @@ const FriendCard = ({
     <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center space-x-3">
-          <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center">
+          <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center overflow-hidden">
             {friend.image ? (
               <Avatar className="h-7 w-7">
-                {friend.image && (
-                  <AvatarImage src={friend.image || ""} alt="Profile" />
-                )}
+                <AvatarImage src={friend.image || ""} alt="Profile" />
               </Avatar>
             ) : (
               <span className="text-white font-semibold text-sm">
-                <Icon size={16} className={"text-white"} />
+                <Icon size={16} className="text-white" />
               </span>
             )}
           </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">
+          <div className="max-w-[140px]">
+            {" "}
+            {/* adjust max-width as needed */}
+            <h3
+              className="font-semibold text-gray-900 text-sm truncate"
+              title={friend.name ? friend.name : friend.email}
+            >
               {friend.name ? friend.name : friend.email}
             </h3>
-            {/* <p className="text-sm text-gray-500">{friend.email}</p> */}
+            {/* <p className="text-sm text-gray-500 truncate">{friend.email}</p> */}
           </div>
         </div>
+
         <div className="flex items-center">
           <button
             onClick={() => onRemove(friend.id)}

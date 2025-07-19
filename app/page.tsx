@@ -23,8 +23,8 @@ export default async function Page() {
         userId={session.user.id}
       />
 
-      <div className="flex justify-between items-center gap-3 p-2 m-2">
-        <Link href={"/history-stats"} className="btn btn-outline">
+      <div className="flex justify-center items-center p-2 m-2">
+        <Link href={"/history-stats"}>
           <Button variant={"outline"} className="cursor-pointer">
             History with Statistics
           </Button>

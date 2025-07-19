@@ -1,12 +1,24 @@
+// export function getWeekDates(centerDate: Date) {
+//   const start = new Date(centerDate);
+//   start.setDate(centerDate.getDate() - centerDate.getDay()); // Sunday
+//   return Array.from({ length: 7 }, (_, i) => {
+//     const d = new Date(start);
+//     d.setDate(start.getDate() + i);
+//     return d;
+//   });
+// }
+
 export function getWeekDates(centerDate: Date) {
   const start = new Date(centerDate);
-  start.setDate(centerDate.getDate() - centerDate.getDay()); // Sunday
-  return Array.from({ length: 7 }, (_, i) => {
+  start.setDate(centerDate.getDate() - 6); // Start 7 days before the center
+
+  return Array.from({ length: 13 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
     return d;
   });
 }
+
 
 export const getCompletionBadgeColor = (percentage: number) => {
   if (percentage >= 80) return "bg-emerald-100 text-emerald-800";

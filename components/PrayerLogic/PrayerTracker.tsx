@@ -114,9 +114,11 @@ const PrayerTracker = ({
   };
 
   // Calendar strip
-  const weekDates = getWeekDates(selectedDate);
   const today = new Date();
   today.setHours(0, 0, 0, 0);
+  const weekDates = getWeekDates(today);
+  // const today = new Date();
+  // today.setHours(0, 0, 0, 0);
 
   return (
     <>
@@ -141,7 +143,7 @@ const PrayerTracker = ({
 
             {/* Week Navigation */}
             <div className="mb-8">
-              <div className="flex justify-between space-x-1">
+              <div className="flex flex-wrap gap-2">
                 {weekDates.map((date) => {
                   const isToday = date.getTime() === today.getTime();
                   const isSelected = date.getTime() === selectedDate.getTime();
