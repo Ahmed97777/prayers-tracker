@@ -12,6 +12,8 @@ import {
   X,
   ChevronDown,
   ChevronRight,
+  BarChart3,
+  History as HistoryIcon,
 } from "lucide-react";
 import PrayerStatistics from "./PrayerStatistics";
 import { statusConfig } from "@/utils/constants";
@@ -23,6 +25,8 @@ import { DayData, HistoryLog, HistoryResponse, Prayer } from "@/utils/types";
 interface HistoryProps {
   userId: string;
 }
+
+type ViewMode = "history" | "stats";
 
 const History = ({ userId }: HistoryProps) => {
   const [historyData, setHistoryData] = useState<DayData[]>([]);
@@ -42,6 +46,7 @@ const History = ({ userId }: HistoryProps) => {
     startDate: "",
     endDate: "",
   });
+  const [viewMode, setViewMode] = useState<ViewMode>("history");
 
   const fetchHistory = async (
     currentPage: number = 1,
@@ -191,18 +196,53 @@ const History = ({ userId }: HistoryProps) => {
     <div className="w-full max-w-4xl mx-auto space-y-6 p-4">
       <HistoryHeader />
 
-      {/* Date Filter */}
-      <DateFilter
-        dateFilter={dateFilter}
-        setDateFilter={setDateFilter}
-        appliedFilter={appliedFilter}
-        handleDateFilter={handleDateFilter}
-        clearDateFilter={clearDateFilter}
-        handleRefresh={handleRefresh}
-        isFilterActive={isFilterActive}
-        loading={loading}
-        setError={setError}
-      />
+      {/* View Mode Toggle */}
+      <Card className="shadow-sm">
+        <CardContent className="">
+          <div className="flex justify-around items-center">
+            <Button
+              onClick={() => setViewMode("history")}
+              variant={viewMode === "history" ? "default" : "outline"}
+              className={`flex items-center gap-2 cursor-pointer ${
+                viewMode === "history"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "hover:bg-gray-50"
+              }`}
+            >
+              <HistoryIcon className="w-4 h-4" />
+              History
+            </Button>
+
+            <Button
+              onClick={() => setViewMode("stats")}
+              variant={viewMode === "stats" ? "default" : "outline"}
+              className={`flex items-center gap-2 cursor-pointer ${
+                viewMode === "stats"
+                  ? "bg-blue-600 hover:bg-blue-700 text-white"
+                  : "hover:bg-gray-50"
+              }`}
+            >
+              <BarChart3 className="w-4 h-4" />
+              Stats
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Date Filter - Only show in history view */}
+      {viewMode === "history" && (
+        <DateFilter
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          appliedFilter={appliedFilter}
+          handleDateFilter={handleDateFilter}
+          clearDateFilter={clearDateFilter}
+          handleRefresh={handleRefresh}
+          isFilterActive={isFilterActive}
+          loading={loading}
+          setError={setError}
+        />
+      )}
 
       {/* Error Display */}
       {error && (
@@ -224,214 +264,234 @@ const History = ({ userId }: HistoryProps) => {
         </div>
       )}
 
-      {/* No Data */}
-      {!loading && historyData.length === 0 && !error && (
-        <Card className="shadow-sm">
-          <CardContent className="text-center py-12">
-            <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">
-              No Prayer History Found
-            </h3>
-            <p className="text-gray-600 max-w-md mx-auto mb-4">
-              {isFilterActive
-                ? "No prayer logs found for the selected date range. Try adjusting your filter or clear it to see all records."
-                : "You haven't recorded any prayers yet. Start your spiritual journey by logging your first prayer!"}
-            </p>
-            {isFilterActive && (
-              <Button
-                onClick={clearDateFilter}
-                variant="outline"
-                size="sm"
-                className="cursor-pointer"
-              >
-                <X className="w-4 h-4 mr-2" />
-                Clear Filter
-              </Button>
-            )}
-          </CardContent>
-        </Card>
-      )}
+      {/* History View */}
+      {viewMode === "history" && (
+        <>
+          {/* No Data */}
+          {!loading && historyData.length === 0 && !error && (
+            <Card className="shadow-sm">
+              <CardContent className="text-center py-12">
+                <Calendar className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                <h3 className="text-lg font-medium text-gray-900 mb-2">
+                  No Prayer History Found
+                </h3>
+                <p className="text-gray-600 max-w-md mx-auto mb-4">
+                  {isFilterActive
+                    ? "No prayer logs found for the selected date range. Try adjusting your filter or clear it to see all records."
+                    : "You haven't recorded any prayers yet. Start your spiritual journey by logging your first prayer!"}
+                </p>
+                {isFilterActive && (
+                  <Button
+                    onClick={clearDateFilter}
+                    variant="outline"
+                    size="sm"
+                    className="cursor-pointer"
+                  >
+                    <X className="w-4 h-4 mr-2" />
+                    Clear Filter
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
-      {/* History Data */}
-      {!loading &&
-        historyData.map((dayData) => {
-          const isExpanded = expandedDates.has(dayData.date);
-          const userCompletion = getCompletionPercentage(
-            dayData.user.logs,
-            prayers.length
-          );
+          {/* History Data */}
+          {!loading &&
+            historyData.map((dayData) => {
+              const isExpanded = expandedDates.has(dayData.date);
+              const userCompletion = getCompletionPercentage(
+                dayData.user.logs,
+                prayers.length
+              );
 
-          return (
-            <Card
-              key={dayData.date}
-              className="shadow-sm hover:shadow-md transition-shadow"
-            >
-              {/* Date Header */}
-              <CardHeader
-                className="cursor-pointer hover:bg-gray-50 transition-colors border-b"
-                onClick={() => toggleDateExpansion(dayData.date)}
-              >
-                <div className="flex justify-between items-center">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      {isExpanded ? (
-                        <ChevronDown className="w-5 h-5 text-gray-400" />
-                      ) : (
-                        <ChevronRight className="w-5 h-5 text-gray-400" />
-                      )}
-                      {historyFormatDate(dayData.date)}
-                    </CardTitle>
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm text-gray-600">
-                        Your completion:
-                      </span>
-                      <Badge
-                        className={getCompletionBadgeColor(userCompletion)}
-                      >
-                        {userCompletion}%
-                      </Badge>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-sm text-gray-500">
-                      {dayData.friends.length} friend
-                      {dayData.friends.length !== 1 ? "s" : ""}
-                    </p>
-                  </div>
-                </div>
-              </CardHeader>
-
-              {/* Expanded Content */}
-              {isExpanded && (
-                <CardContent className="pt-6 space-y-6">
-                  {/* Your Prayers */}
-                  <div className="space-y-4">
-                    <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                      <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                      Your Prayers
-                    </h4>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                      {prayers.map((prayer) => {
-                        const status = getStatusForPrayer(
-                          dayData.user.logs,
-                          prayer.id
-                        );
-                        const config = statusConfig[status];
-                        const Icon = statusConfig[status].label;
-                        return (
-                          <div
-                            key={prayer.id}
-                            className="text-center space-y-2"
+              return (
+                <Card
+                  key={dayData.date}
+                  className="shadow-sm hover:shadow-md transition-shadow"
+                >
+                  {/* Date Header */}
+                  <CardHeader
+                    className="cursor-pointer hover:bg-gray-50 transition-colors border-b"
+                    onClick={() => toggleDateExpansion(dayData.date)}
+                  >
+                    <div className="flex justify-between items-center">
+                      <div className="space-y-1">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          {isExpanded ? (
+                            <ChevronDown className="w-5 h-5 text-gray-400" />
+                          ) : (
+                            <ChevronRight className="w-5 h-5 text-gray-400" />
+                          )}
+                          {historyFormatDate(dayData.date)}
+                        </CardTitle>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm text-gray-600">
+                            Your completion:
+                          </span>
+                          <Badge
+                            className={getCompletionBadgeColor(userCompletion)}
                           >
-                            <div
-                              className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold mx-auto transition-colors ${config.color}`}
-                              title={`${prayer.name}: ${config.name}`}
-                            >
-                              <Icon className="text-white" size={24} />
-                            </div>
-                            <p className="text-sm text-gray-700 font-medium">
-                              {prayer.name}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-
-                  {/* Friends' Prayers */}
-                  {dayData.friends.length > 0 && (
-                    <div className="space-y-4">
-                      <h4 className="font-semibold text-gray-900 flex items-center gap-2">
-                        <Users className="w-4 h-4 text-green-500" />
-                        Friends' Progress
-                      </h4>
-                      <div className="space-y-4">
-                        {dayData.friends.map((friend) => {
-                          const friendCompletion = getCompletionPercentage(
-                            friend.logs,
-                            prayers.length
-                          );
-                          return (
-                            <div
-                              key={friend.friendId}
-                              className="bg-gray-50 rounded-lg p-4 space-y-3"
-                            >
-                              <div className="flex justify-between items-center">
-                                <p className="font-medium text-gray-900">
-                                  {friend.friendName}
-                                </p>
-                                <Badge
-                                  className={getCompletionBadgeColor(
-                                    friendCompletion
-                                  )}
-                                >
-                                  {friendCompletion}%
-                                </Badge>
-                              </div>
-                              <div className="grid grid-cols-5 gap-6">
-                                {prayers.map((prayer) => {
-                                  const status = getStatusForPrayer(
-                                    friend.logs,
-                                    prayer.id
-                                  );
-                                  const config = statusConfig[status];
-                                  const Icon = statusConfig[status].label;
-                                  return (
-                                    <div
-                                      key={prayer.id}
-                                      className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold transition-colors ${config.color}`}
-                                      title={`${prayer.name}: ${config.name}`}
-                                    >
-                                      <Icon className="text-white" size={24} />
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            </div>
-                          );
-                        })}
+                            {userCompletion}%
+                          </Badge>
+                        </div>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-sm text-gray-500">
+                          {dayData.friends.length} friend
+                          {dayData.friends.length !== 1 ? "s" : ""}
+                        </p>
                       </div>
                     </div>
+                  </CardHeader>
+
+                  {/* Expanded Content */}
+                  {isExpanded && (
+                    <CardContent className="pt-6 space-y-6">
+                      {/* Your Prayers */}
+                      <div className="space-y-4">
+                        <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
+                          Your Prayers
+                        </h4>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+                          {prayers.map((prayer) => {
+                            const status = getStatusForPrayer(
+                              dayData.user.logs,
+                              prayer.id
+                            );
+                            const config = statusConfig[status];
+                            const Icon = statusConfig[status].label;
+                            return (
+                              <div
+                                key={prayer.id}
+                                className="text-center space-y-2"
+                              >
+                                <div
+                                  className={`w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold mx-auto transition-colors ${config.color}`}
+                                  title={`${prayer.name}: ${config.name}`}
+                                >
+                                  <Icon className="text-white" size={24} />
+                                </div>
+                                <p className="text-sm text-gray-700 font-medium">
+                                  {prayer.name}
+                                </p>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+
+                      {/* Friends' Prayers */}
+                      {dayData.friends.length > 0 && (
+                        <div className="space-y-4">
+                          <h4 className="font-semibold text-gray-900 flex items-center gap-2">
+                            <Users className="w-4 h-4 text-green-500" />
+                            Friends' Progress
+                          </h4>
+                          <div className="space-y-4">
+                            {dayData.friends.map((friend) => {
+                              const friendCompletion = getCompletionPercentage(
+                                friend.logs,
+                                prayers.length
+                              );
+                              return (
+                                <div
+                                  key={friend.friendId}
+                                  className="bg-gray-50 rounded-lg p-4 space-y-3"
+                                >
+                                  <div className="flex justify-between items-center">
+                                    <p className="font-medium text-gray-900">
+                                      {friend.friendName}
+                                    </p>
+                                    <Badge
+                                      className={getCompletionBadgeColor(
+                                        friendCompletion
+                                      )}
+                                    >
+                                      {friendCompletion}%
+                                    </Badge>
+                                  </div>
+                                  <div className="grid grid-cols-5 gap-6">
+                                    {prayers.map((prayer) => {
+                                      const status = getStatusForPrayer(
+                                        friend.logs,
+                                        prayer.id
+                                      );
+                                      const config = statusConfig[status];
+                                      const Icon = statusConfig[status].label;
+                                      return (
+                                        <div
+                                          key={prayer.id}
+                                          className={`w-10 h-10 rounded-lg flex items-center justify-center text-white text-sm font-bold transition-colors ${config.color}`}
+                                          title={`${prayer.name}: ${config.name}`}
+                                        >
+                                          <Icon
+                                            className="text-white"
+                                            size={24}
+                                          />
+                                        </div>
+                                      );
+                                    })}
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      )}
+                    </CardContent>
                   )}
-                </CardContent>
-              )}
+                </Card>
+              );
+            })}
+
+          {/* Pagination */}
+          {pagination && pagination.totalPages > 1 && (
+            <Card className="shadow-sm">
+              <CardContent className="pt-6">
+                <div className="flex flex-col justify-between items-center gap-1">
+                  <div className="flex justify-center items-center gap-3">
+                    <Badge variant="outline">
+                      Page {pagination.page} of {pagination.totalPages}
+                    </Badge>
+
+                    <Badge variant="outline">
+                      Showing {historyData.length} days
+                    </Badge>
+
+                    <Badge variant="outline">
+                      {pagination.total} total days
+                    </Badge>
+                  </div>
+
+                  <div className="flex justify-center items-center gap-3">
+                    <Button
+                      onClick={() => setPage((prev) => prev - 1)}
+                      disabled={!pagination.hasPrev || loading}
+                      variant="outline"
+                    >
+                      Previous
+                    </Button>
+
+                    <Button
+                      onClick={() => setPage((prev) => prev + 1)}
+                      disabled={!pagination.hasNext || loading}
+                      variant="outline"
+                    >
+                      Next
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
             </Card>
-          );
-        })}
-
-      {/* Pagination */}
-      {pagination && pagination.totalPages > 1 && (
-        <Card className="shadow-sm">
-          <CardContent className="pt-6">
-            <div className="flex justify-between items-center">
-              <Button
-                onClick={() => setPage((prev) => prev - 1)}
-                disabled={!pagination.hasPrev || loading}
-                variant="outline"
-              >
-                Previous
-              </Button>
-
-              <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">
-                  Page {pagination.page} of {pagination.totalPages}
-                </span>
-                <Badge variant="outline">{pagination.total} total days</Badge>
-              </div>
-
-              <Button
-                onClick={() => setPage((prev) => prev + 1)}
-                disabled={!pagination.hasNext || loading}
-                variant="outline"
-              >
-                Next
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+          )}
+        </>
       )}
 
-      <PrayerStatistics historyData={historyData} prayers={prayers} />
+      {/* Stats View */}
+      {viewMode === "stats" && (
+        <PrayerStatistics historyData={historyData} prayers={prayers} />
+      )}
     </div>
   );
 };
