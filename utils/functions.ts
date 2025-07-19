@@ -10,9 +10,9 @@
 
 export function getWeekDates(centerDate: Date) {
   const start = new Date(centerDate);
-  start.setDate(centerDate.getDate() - 6); // Start 7 days before the center
+  start.setDate(centerDate.getDate() - 6); // Start 6 days before the center
 
-  return Array.from({ length: 13 }, (_, i) => {
+  return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
     return d;
