@@ -14,11 +14,13 @@ import DayButton from "./DayButton";
 import { Prayer, PrayerLog } from "@/utils/types";
 import { UserCog } from "lucide-react";
 import Link from "next/link";
+import { User } from "next-auth";
+import { Avatar, AvatarImage } from "../ui/avatar";
 
 interface PrayerTrackerProps {
   prayers: Prayer[];
   prayerLogs: PrayerLog[];
-  userId: string;
+  user: User;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
 }
@@ -26,7 +28,7 @@ interface PrayerTrackerProps {
 const PrayerTracker = ({
   prayers = defaultPrayers,
   prayerLogs: initialPrayerLogs = [],
-  userId = "demo-user",
+  user,
   selectedDate,
   setSelectedDate,
 }: Partial<PrayerTrackerProps> & {
@@ -38,6 +40,9 @@ const PrayerTracker = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [postError, setPostError] = useState<string | null>(null);
+  const [userId] = useState<string | undefined>(user?.id);
+  const [userName] = useState<string | undefined | null>(user?.name);
+  const [userImage] = useState<string | undefined | null>(user?.image);
 
   // Fetch logs when selectedDate changes
   useEffect(() => {
@@ -117,8 +122,6 @@ const PrayerTracker = ({
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const weekDates = getWeekDates(today);
-  // const today = new Date();
-  // today.setHours(0, 0, 0, 0);
 
   return (
     <>
@@ -134,16 +137,35 @@ const PrayerTracker = ({
                 <h1 className="text-xl font-bold text-gray-900">
                   Today, {formatDate(selectedDate)}
                 </h1>
-                <p className="text-sm text-gray-600 mt-1">Prayer Tracker</p>
+                <div className="flex justify-start items-center max-w-[260px] truncate mt-1">
+                  <span className="text-sm text-gray-600 ">Prayer Tracker</span>
+                  {userName && (
+                    <span className="text-sm font-medium text-gray-800 ">
+                      , {userName}
+                    </span>
+                  )}
+                </div>
               </div>
-              <Link href={"/user-profile"}>
-                <UserCog className="text-gray-600" size={28} />
-              </Link>
+              {userImage ? (
+                <Link href={"/user-profile"}>
+                  <Avatar className="h-7 w-7">
+                    <AvatarImage
+                      className="object-cover rounded-full"
+                      src={userImage || ""}
+                      alt="Profile"
+                    />
+                  </Avatar>
+                </Link>
+              ) : (
+                <Link href={"/user-profile"}>
+                  <UserCog className="text-gray-600" size={28} />
+                </Link>
+              )}
             </header>
 
             {/* Week Navigation */}
             <div className="mb-8">
-              <div className="flex flex-wrap gap-2">
+              <div className="flex justify-between space-x-1">
                 {weekDates.map((date) => {
                   const isToday = date.getTime() === today.getTime();
                   const isSelected = date.getTime() === selectedDate.getTime();

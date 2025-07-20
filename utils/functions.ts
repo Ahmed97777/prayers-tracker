@@ -1,24 +1,13 @@
-// export function getWeekDates(centerDate: Date) {
-//   const start = new Date(centerDate);
-//   start.setDate(centerDate.getDate() - centerDate.getDay()); // Sunday
-//   return Array.from({ length: 7 }, (_, i) => {
-//     const d = new Date(start);
-//     d.setDate(start.getDate() + i);
-//     return d;
-//   });
-// }
 
 export function getWeekDates(centerDate: Date) {
   const start = new Date(centerDate);
   start.setDate(centerDate.getDate() - 6); // Start 6 days before the center
-
   return Array.from({ length: 7 }, (_, i) => {
     const d = new Date(start);
     d.setDate(start.getDate() + i);
     return d;
   });
 }
-
 
 export const getCompletionBadgeColor = (percentage: number) => {
   if (percentage >= 80) return "bg-emerald-100 text-emerald-800";
@@ -43,6 +32,14 @@ export const formatDate = (date: Date) => {
     "December",
   ];
   return `${date.getDate()} ${months[date.getMonth()]}, ${date.getFullYear()}`;
+};
+
+export const memberFor = (date: Date | string) => {
+  const createdAt = new Date(date);
+  const now = new Date();
+  const diffInMs = now.getTime() - createdAt.getTime();
+  const days = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
+  return `Member for ${days} day${days !== 1 ? "s" : ""}`;
 };
 
 export const historyFormatDate = (dateStr: string) => {

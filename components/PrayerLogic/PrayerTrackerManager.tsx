@@ -10,17 +10,18 @@ import {
   Prayer,
   PrayerLog,
 } from "@/utils/types";
+import { User } from "next-auth";
 
 export default function PrayerTrackerManager({
   prayers: dbPrayers,
   prayerLogs: dbPrayerLogs,
-  userId,
+  user,
   selectedDate,
   setSelectedDate,
 }: {
   prayers: DatabasePrayer[];
   prayerLogs: DatabasePrayerLog[];
-  userId: string;
+  user: User;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
 }) {
@@ -49,7 +50,7 @@ export default function PrayerTrackerManager({
     <PrayerTracker
       prayers={prayers}
       prayerLogs={prayerLogs}
-      userId={userId}
+      user={user}
       selectedDate={selectedDate}
       setSelectedDate={setSelectedDate}
     />

@@ -6,14 +6,15 @@ import { friendsStatusStyles } from "@/utils/constants";
 import AddFriendDrawer from "./AddFriendDrawer";
 import { formatDate } from "@/utils/functions";
 import { Friend, FriendLogSummary } from "@/utils/types";
+import { User } from "next-auth";
 
 interface FriendManagerProps {
-  userId: string;
+  user: User;
   selectedDate: Date;
 }
 
 const FriendsManagerWithShadcn = ({
-  userId,
+  user,
   selectedDate,
 }: FriendManagerProps) => {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -25,6 +26,8 @@ const FriendsManagerWithShadcn = ({
   const [error, setError] = useState("");
   const [logsError, setLogsError] = useState("");
   const [showAddFriend, setShowAddFriend] = useState(false);
+  const [userId] = useState<string | undefined>(user?.id);
+  const [userName] = useState<string | undefined | null>(user?.name);
 
   // Enhanced error handling function
   const getErrorMessage = (error: any, defaultMessage: string): string => {
@@ -195,8 +198,17 @@ const FriendsManagerWithShadcn = ({
       <div className="container mx-auto max-w-md p-4">
         {/* Header */}
         <header className="flex justify-between items-center py-6">
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Prayer Circle</h1>
+          <div className="flex flex-col">
+            <div className="flex justify-start items-center max-w-[260px] truncate">
+              <span className="text-xl font-bold text-gray-900">
+                Prayer Circle
+              </span>
+              {userName && (
+                <span className="text-base font-medium text-gray-800">
+                  , {userName}
+                </span>
+              )}
+            </div>
             <p className="text-sm text-gray-600 mt-1">
               {formatDate(selectedDate)}
             </p>

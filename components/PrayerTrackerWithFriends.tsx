@@ -3,17 +3,18 @@
 import { useState } from "react";
 import PrayerTrackerManager from "./PrayerLogic/PrayerTrackerManager";
 import FriendsManagerWithShadcn from "./FriendsLogic/FriendsSharing";
+import { User } from "next-auth";
 
 interface PrayerTrackerWithFriendsProps {
   prayers: any;
   prayerLogs: any;
-  userId: string;
+  user: User;
 }
 
 export default function PrayerTrackerWithFriends({
   prayers,
   prayerLogs,
-  userId,
+  user,
 }: PrayerTrackerWithFriendsProps) {
   const [selectedDate, setSelectedDate] = useState(() => {
     const today = new Date();
@@ -26,12 +27,12 @@ export default function PrayerTrackerWithFriends({
       <PrayerTrackerManager
         prayers={prayers}
         prayerLogs={prayerLogs}
-        userId={userId}
+        user={user}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
       />
 
-      <FriendsManagerWithShadcn userId={userId} selectedDate={selectedDate} />
+      <FriendsManagerWithShadcn user={user} selectedDate={selectedDate} />
     </>
   );
 }

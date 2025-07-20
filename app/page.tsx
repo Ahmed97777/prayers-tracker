@@ -20,7 +20,7 @@ export default async function Page() {
       <PrayerTrackerWithFriends
         prayers={prayers}
         prayerLogs={prayerLogs}
-        userId={session.user.id}
+        user={session.user}
       />
 
       <div className="flex justify-center items-center p-2 m-2">

@@ -13,7 +13,7 @@ const DayButton = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center justify-center w-10 h-12 rounded-xl transition-all duration-200 cursor-pointer ${
+    className={`flex flex-col items-center justify-center w-12 h-16 rounded-xl transition-all duration-200 cursor-pointer ${
       selected
         ? "bg-blue-600 text-white shadow-lg scale-105"
         : isToday
@@ -22,7 +22,7 @@ const DayButton = ({
     }`}
   >
     <span className="text-xs font-medium">{day}</span>
-    <span className="text-base font-bold mt-1">{date}</span>
+    <span className="text-lg font-bold mt-1">{date}</span>
   </button>
 );
 

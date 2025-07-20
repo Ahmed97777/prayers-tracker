@@ -13,6 +13,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import {
   Loader2,
   Camera,
@@ -37,7 +38,9 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
+
 import SignOut from "../auth_comps/SignOut";
+import { memberFor } from "@/utils/functions";
 
 interface ProfileProps {
   className?: string;
@@ -238,7 +241,7 @@ export default function Profile({ className, session }: ProfileProps) {
                 {session.user.image && (
                   <AvatarImage
                     className="object-cover rounded-full"
-                    src={session.user.image || ""}
+                    src={session.user.image}
                     alt="Profile"
                   />
                 )}
@@ -246,8 +249,6 @@ export default function Profile({ className, session }: ProfileProps) {
                   {session.user.name ? getInitials(session.user.name) : "U"}
                 </AvatarFallback>
               </Avatar>
-
-              {/* Upload Button */}
               <Button
                 size="sm"
                 variant="secondary"
@@ -310,10 +311,20 @@ export default function Profile({ className, session }: ProfileProps) {
             </div>
 
             <div className="flex-1 text-center sm:text-left">
-              <h3 className="text-xl font-semibold">
-                {session.user.name || "Anonymous User"}
-              </h3>
-              <p className="text-muted-foreground">{session.user.email}</p>
+              <div className="max-w-[220px]">
+                <h3 className="font-semibold text-xl truncate">
+                  {session.user.name ? session.user.name : "Anonymous User"}
+                </h3>
+
+                <p className="text-muted-foreground truncate">
+                  {session.user.email}
+                </p>
+              </div>
+              {session.user.createdAt && (
+                <Badge variant="outline" className="mt-2">
+                  {memberFor(session.user.createdAt)}
+                </Badge>
+              )}
             </div>
           </div>
 
@@ -373,9 +384,13 @@ export default function Profile({ className, session }: ProfileProps) {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              <div className="flex justify-items-start items-center gap-2">
                 <User className="h-4 w-4" />
-                {session.user.name || "No name set"}
+                <div className="flex items-center gap-2 text-muted-foreground max-w-[220px]">
+                  <div className="truncate">
+                    {session.user.name || "No name set"}
+                  </div>
+                </div>
               </div>
             )}
           </div>
