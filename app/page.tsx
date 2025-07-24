@@ -1,9 +1,9 @@
-import { auth } from "@/lib/auth";
-import { redirect } from "next/navigation";
-import PrayerTrackerWithFriends from "@/components/PrayerTrackerWithFriends";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { getTodayPrayerLogs } from "@/lib/prayerService";
+import PrayerTrackerWithFriends from "@/components/PrayerTrackerWithFriends";
 
 export default async function Page() {
   const session = await auth();

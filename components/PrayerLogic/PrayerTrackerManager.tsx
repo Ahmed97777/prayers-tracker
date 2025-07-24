@@ -1,6 +1,5 @@
 "use client";
 
-import { defaultPrayers } from "@/utils/constants";
 import PrayerTracker from "./PrayerTracker";
 import { DatabasePrayerLog, Prayer, PrayerLog } from "@/utils/types";
 import { User } from "next-auth";
