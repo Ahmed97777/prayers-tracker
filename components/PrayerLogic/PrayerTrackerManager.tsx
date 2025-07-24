@@ -1,37 +1,21 @@
 "use client";
 
-import { Moon } from "lucide-react";
-
-import { prayerIconMap } from "@/utils/constants";
+import { defaultPrayers } from "@/utils/constants";
 import PrayerTracker from "./PrayerTracker";
-import {
-  DatabasePrayer,
-  DatabasePrayerLog,
-  Prayer,
-  PrayerLog,
-} from "@/utils/types";
+import { DatabasePrayerLog, Prayer, PrayerLog } from "@/utils/types";
 import { User } from "next-auth";
 
 export default function PrayerTrackerManager({
-  prayers: dbPrayers,
   prayerLogs: dbPrayerLogs,
   user,
   selectedDate,
   setSelectedDate,
 }: {
-  prayers: DatabasePrayer[];
   prayerLogs: DatabasePrayerLog[];
   user: User;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
 }) {
-  // Convert database prayers to component prayers (add icons)
-  const prayers: Prayer[] = dbPrayers.map((prayer) => ({
-    ...prayer,
-    icon: prayerIconMap[prayer.name] || Moon,
-  }));
-
-  // Convert database prayer logs to component prayer logs (remove extra fields)
   const prayerLogs: PrayerLog[] = dbPrayerLogs
     .filter((log) => {
       const logDate = new Date(log.date);
@@ -48,7 +32,6 @@ export default function PrayerTrackerManager({
 
   return (
     <PrayerTracker
-      prayers={prayers}
       prayerLogs={prayerLogs}
       user={user}
       selectedDate={selectedDate}

@@ -6,13 +6,11 @@ import FriendsManagerWithShadcn from "./FriendsLogic/FriendsSharing";
 import { User } from "next-auth";
 
 interface PrayerTrackerWithFriendsProps {
-  prayers: any;
   prayerLogs: any;
   user: User;
 }
 
 export default function PrayerTrackerWithFriends({
-  prayers,
   prayerLogs,
   user,
 }: PrayerTrackerWithFriendsProps) {
@@ -25,7 +23,6 @@ export default function PrayerTrackerWithFriends({
   return (
     <>
       <PrayerTrackerManager
-        prayers={prayers}
         prayerLogs={prayerLogs}
         user={user}
         selectedDate={selectedDate}

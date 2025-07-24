@@ -17,8 +17,9 @@ import Link from "next/link";
 import { User } from "next-auth";
 import { Avatar, AvatarImage } from "../ui/avatar";
 
+const prayers: Prayer[] = defaultPrayers;
+
 interface PrayerTrackerProps {
-  prayers: Prayer[];
   prayerLogs: PrayerLog[];
   user: User;
   selectedDate: Date;
@@ -26,12 +27,11 @@ interface PrayerTrackerProps {
 }
 
 const PrayerTracker = ({
-  prayers = defaultPrayers,
   prayerLogs: initialPrayerLogs = [],
   user,
   selectedDate,
   setSelectedDate,
-}: Partial<PrayerTrackerProps> & {
+}: PrayerTrackerProps & {
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
 }) => {
@@ -40,9 +40,9 @@ const PrayerTracker = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [postError, setPostError] = useState<string | null>(null);
-  const [userId] = useState<string | undefined>(user?.id);
-  const [userName] = useState<string | undefined | null>(user?.name);
-  const [userImage] = useState<string | undefined | null>(user?.image);
+  const userId: string | undefined = user?.id;
+  const userName: string | undefined | null = user?.name;
+  const userImage: string | undefined | null = user?.image;
 
   // Fetch logs when selectedDate changes
   useEffect(() => {
