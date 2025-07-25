@@ -1,17 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import PrayerTrackerManager from "./PrayerLogic/PrayerTrackerManager";
 import FriendsManagerWithShadcn from "./FriendsLogic/FriendsSharing";
-import { User } from "next-auth";
+import PrayerTracker from "./PrayerLogic/PrayerTracker";
 
 interface PrayerTrackerWithFriendsProps {
-  prayerLogs: any;
-  user: User;
+  user: any;
 }
 
 export default function PrayerTrackerWithFriends({
-  prayerLogs,
   user,
 }: PrayerTrackerWithFriendsProps) {
   const [selectedDate, setSelectedDate] = useState(() => {
@@ -22,8 +19,7 @@ export default function PrayerTrackerWithFriends({
 
   return (
     <>
-      <PrayerTrackerManager
-        prayerLogs={prayerLogs}
+      <PrayerTracker
         user={user}
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}

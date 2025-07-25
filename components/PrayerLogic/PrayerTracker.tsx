@@ -16,14 +16,12 @@ import { getWeekDates } from "@/utils/functions";
 const prayers: Prayer[] = defaultPrayers;
 
 interface PrayerTrackerProps {
-  prayerLogs: PrayerLog[];
   user: User;
   selectedDate: Date;
   setSelectedDate: (date: Date) => void;
 }
 
 const PrayerTracker = ({
-  prayerLogs: initialPrayerLogs = [],
   user,
   selectedDate,
   setSelectedDate,
@@ -32,7 +30,7 @@ const PrayerTracker = ({
   setSelectedDate: (date: Date) => void;
 }) => {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
-  const [prayerLogs, setPrayerLogs] = useState(initialPrayerLogs);
+  const [prayerLogs, setPrayerLogs] = useState<PrayerLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [postError, setPostError] = useState<string | null>(null);
