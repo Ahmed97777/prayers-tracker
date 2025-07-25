@@ -10,14 +10,12 @@ import { prayerStatusOptions } from "@/utils/constants";
 interface DrawerMainLogicProps {
   selectedPrayer: Prayer | null;
   loading: boolean;
-  postError: string | null;
   handleStatusSelect: (status: "ON_TIME" | "LATE" | "JAMAAH") => void;
 }
 
 export default function DrawerMainLogic({
   selectedPrayer,
   loading,
-  postError,
   handleStatusSelect,
 }: DrawerMainLogicProps) {
   return (
@@ -39,18 +37,6 @@ export default function DrawerMainLogic({
       </DrawerHeader>
 
       <div className="px-4 pb-6">
-        {loading && (
-          <div className="flex justify-center mb-4">
-            <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
-          </div>
-        )}
-
-        {postError && (
-          <div className="text-sm text-red-600 bg-red-100 p-2 rounded mb-4 text-center">
-            {postError}
-          </div>
-        )}
-
         <div className="space-y-2">
           {prayerStatusOptions.map((option) => (
             <button

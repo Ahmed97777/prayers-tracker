@@ -13,6 +13,7 @@ export function usePostPrayerStatus(
     async function postPrayerStatus() {
       if (!selectedPrayer) return;
       setLoading(true);
+      setSelectedPrayer(null); // Close drawer
       setPostError(null);
 
       try {
@@ -38,10 +39,8 @@ export function usePostPrayerStatus(
           );
           return [...otherLogs, updatedLog];
         });
-  
-        setSelectedPrayer(null); // Close drawer on success
-      } catch (e: any) {
-        setPostError("Failed to save prayer status. Please try again.");
+        } catch (e: any) {
+        setPostError(`Failed to save prayer status. Please try again.`);
       } finally {
         setLoading(false);
       }

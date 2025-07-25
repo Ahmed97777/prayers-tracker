@@ -1,8 +1,8 @@
+import Image from "next/image";
 import { Moon, Sun, CloudSun, Sunset, MoonStar, User, X } from "lucide-react";
-
 import { friendsStatusStyles } from "@/utils/constants";
 import { Friend, FriendLogSummary } from "@/utils/types";
-import { Avatar, AvatarImage } from "../ui/avatar";
+import { Avatar } from "../ui/avatar";
 
 const prayers = [
   { name: "Fajr", icon: Moon, id: 1 },
@@ -49,11 +49,14 @@ const FriendCard = ({
           <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center overflow-hidden">
             {friend.image ? (
               <Avatar className="h-7 w-7">
-                <AvatarImage
-                  className="object-cover rounded-full"
-                  src={friend.image || ""}
-                  alt="Profile"
-                />
+                <div className="relative h-7 w-7 rounded-full overflow-hidden">
+                  <Image
+                    src={friend.image}
+                    alt="Friend Image"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
               </Avatar>
             ) : (
               <span className="text-white font-semibold text-sm">

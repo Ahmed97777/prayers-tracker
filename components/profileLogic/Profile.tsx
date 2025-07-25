@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -37,10 +38,10 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
-import Link from "next/link";
 
 import SignOut from "../auth_comps/SignOut";
 import { memberFor } from "@/utils/functions";
+import Image from "next/image";
 
 interface ProfileProps {
   className?: string;
@@ -238,16 +239,20 @@ export default function Profile({ className, session }: ProfileProps) {
           <div className="flex flex-col sm:flex-row items-center gap-4">
             <div className="relative">
               <Avatar className="w-28 h-28">
-                {session.user.image && (
-                  <AvatarImage
-                    className="object-cover rounded-full"
-                    src={session.user.image}
-                    alt="Profile"
-                  />
+                {session.user.image ? (
+                  <div className="relative w-28 h-28 rounded-full overflow-hidden">
+                    <Image
+                      src={session.user.image}
+                      alt="Profile"
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ) : (
+                  <AvatarFallback className="text-lg sm:text-xl">
+                    {session.user.name ? getInitials(session.user.name) : "U"}
+                  </AvatarFallback>
                 )}
-                <AvatarFallback className="text-lg sm:text-xl">
-                  {session.user.name ? getInitials(session.user.name) : "U"}
-                </AvatarFallback>
               </Avatar>
               <Button
                 size="sm"

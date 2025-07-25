@@ -82,11 +82,11 @@ const PrayerTracker = ({
               setSelectedDate={setSelectedDate}
             />
 
-            {error && (
+            {error || postError ? (
               <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm mb-4 text-center">
-                {error}
+                {error || postError}
               </div>
-            )}
+            ) : null}
 
             <PrayerCardHolder
               prayers={prayers}
@@ -100,7 +100,6 @@ const PrayerTracker = ({
         <DrawerMainLogic
           selectedPrayer={selectedPrayer}
           loading={loading}
-          postError={postError}
           handleStatusSelect={handleStatusSelect}
         />
       </Drawer>

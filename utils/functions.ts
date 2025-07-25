@@ -1,4 +1,3 @@
-
 export function getWeekDates(centerDate: Date) {
   const start = new Date(centerDate);
   start.setDate(centerDate.getDate() - 6); // Start 6 days before the center
@@ -52,4 +51,13 @@ export const historyFormatDate = (dateStr: string) => {
     month: "long",
     day: "numeric",
   });
+};
+
+export const isToday = (date: Date) => {
+  const today = new Date();
+  return (
+    date.getDate() === today.getDate() &&
+    date.getMonth() === today.getMonth() &&
+    date.getFullYear() === today.getFullYear()
+  );
 };

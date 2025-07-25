@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { UserCog } from "lucide-react";
-import { Avatar, AvatarImage } from "../ui/avatar";
-import { formatDate } from "@/utils/functions";
+import { Avatar } from "../ui/avatar";
+import { formatDate, isToday } from "@/utils/functions";
+import Image from "next/image";
 
 interface PrayerHeaderProps {
   selectedDate: Date;
@@ -18,8 +19,10 @@ export default function PrayerHeader({
     <header className="flex justify-between items-center py-6">
       <div>
         <h1 className="text-xl font-bold text-gray-900">
-          Today, {formatDate(selectedDate)}
+          {isToday(selectedDate) && "Today, "}
+          {formatDate(selectedDate)}
         </h1>
+
         <div className="flex justify-start items-center max-w-[260px] truncate mt-1">
           <span className="text-sm text-gray-600 ">Prayer Tracker</span>
           {userName && (
@@ -32,11 +35,14 @@ export default function PrayerHeader({
       {userImage ? (
         <Link href={"/user-profile"}>
           <Avatar className="h-7 w-7">
-            <AvatarImage
-              className="object-cover rounded-full"
-              src={userImage || ""}
-              alt="Profile"
-            />
+            <div className="relative h-7 w-7 rounded-full overflow-hidden">
+              <Image
+                src={userImage}
+                alt="Profile"
+                fill
+                className="object-cover"
+              />
+            </div>
           </Avatar>
         </Link>
       ) : (
