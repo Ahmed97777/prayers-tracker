@@ -5,6 +5,7 @@ import PrayerCard from "./PrayerCard";
 interface PrayerCardHolderProps {
   prayers: Prayer[];
   prayerLogs: PrayerLog[];
+  loading: boolean;
   setPostError: Dispatch<SetStateAction<string | null>>;
   setSelectedPrayer: Dispatch<SetStateAction<Prayer | null>>;
 }
@@ -12,6 +13,7 @@ interface PrayerCardHolderProps {
 export default function PrayerCardHolder({
   prayers,
   prayerLogs,
+  loading,
   setPostError,
   setSelectedPrayer,
 }: PrayerCardHolderProps) {
@@ -37,6 +39,7 @@ export default function PrayerCardHolder({
           <PrayerCard
             key={prayer.id}
             prayer={prayer}
+            loading={loading}
             status={getStatus(prayer.id)}
             onSelect={() => handleCardClick(prayer)}
           />

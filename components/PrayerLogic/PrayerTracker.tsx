@@ -48,7 +48,6 @@ const PrayerTracker = ({
       selectedPrayer,
       status,
       setPrayerLogs,
-      setLoading,
       setPostError,
       setSelectedPrayer
     );
@@ -89,6 +88,7 @@ const PrayerTracker = ({
             <PrayerCardHolder
               prayers={prayers}
               prayerLogs={prayerLogs}
+              loading={loading}
               setPostError={setPostError}
               setSelectedPrayer={setSelectedPrayer}
             />
@@ -97,7 +97,6 @@ const PrayerTracker = ({
 
         <DrawerMainLogic
           selectedPrayer={selectedPrayer}
-          loading={loading}
           handleStatusSelect={handleStatusSelect}
         />
       </Drawer>

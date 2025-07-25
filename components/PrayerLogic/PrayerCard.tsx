@@ -5,15 +5,20 @@ import { Prayer } from "@/utils/types";
 const PrayerCard = ({
   prayer,
   status,
+  loading,
   onSelect,
 }: {
   prayer: Prayer;
   status: "ON_TIME" | "LATE" | "JAMAAH" | "UNSET";
+  loading: boolean;
   onSelect: () => void;
 }) => {
   const Icon = prayer.icon;
   const statusInfo = statusStyles[status];
   const StatusIcon = statusInfo.icon;
+
+  const NoStatusInfo = statusStyles["UNSET"];
+  const NoStatusIcon = NoStatusInfo.icon;
 
   return (
     <DrawerTrigger asChild onClick={onSelect}>
@@ -32,16 +37,22 @@ const PrayerCard = ({
 
           <div className="flex items-center space-x-2">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${statusInfo.color}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                loading ? NoStatusInfo.color : statusInfo.color
+              }`}
             >
-              {StatusIcon ? (
+              {loading ? (
+                <NoStatusIcon size={16} className="text-white" />
+              ) : (
                 <StatusIcon size={16} className="text-white" />
-              ) : null}
+              )}
             </div>
             <span
-              className={`text-sm font-medium ${statusInfo.textColor} min-w-[70px]`}
+              className={`text-sm font-medium ${
+                loading ? "text-gray-400" : statusInfo.textColor
+              } min-w-[70px]`}
             >
-              {statusInfo.label}
+              {loading ? "Loading..." : statusInfo.label}
             </span>
           </div>
         </div>

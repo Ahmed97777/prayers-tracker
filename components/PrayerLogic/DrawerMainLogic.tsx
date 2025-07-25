@@ -9,13 +9,11 @@ import { prayerStatusOptions } from "@/utils/constants";
 
 interface DrawerMainLogicProps {
   selectedPrayer: Prayer | null;
-  loading: boolean;
   handleStatusSelect: (status: "ON_TIME" | "LATE" | "JAMAAH") => void;
 }
 
 export default function DrawerMainLogic({
   selectedPrayer,
-  loading,
   handleStatusSelect,
 }: DrawerMainLogicProps) {
   return (
@@ -42,7 +40,6 @@ export default function DrawerMainLogic({
             <button
               key={option.id}
               onClick={() => handleStatusSelect(option.id)}
-              disabled={loading}
               className={`w-full flex items-center p-4 rounded-xl border border-gray-200 text-left transition-all duration-200 ${option.color} disabled:opacity-50`}
             >
               <div className="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-4">
