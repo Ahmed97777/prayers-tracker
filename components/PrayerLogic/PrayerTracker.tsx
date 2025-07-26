@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback, Suspense } from "react";
 import { User } from "next-auth";
 import { Drawer } from "@/components/ui/drawer";
 import PrayerHeader from "./PrayerHeader";
@@ -21,55 +21,91 @@ interface PrayerTrackerProps {
   setSelectedDate: (date: Date) => void;
 }
 
+const PrayerCardSkeleton = () => (
+  <div className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 animate-pulse">
+    <div className="flex items-center justify-between">
+      <div className="flex items-center space-x-4">
+        <div className="w-12 h-12 bg-gray-200 rounded-xl"></div>
+        <div className="h-6 bg-gray-200 rounded w-20"></div>
+      </div>
+      <div className="flex items-center space-x-2">
+        <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+        <div className="h-4 bg-gray-200 rounded w-16"></div>
+      </div>
+    </div>
+  </div>
+);
+
 const PrayerTracker = ({
   user,
   selectedDate,
   setSelectedDate,
-}: PrayerTrackerProps & {
-  selectedDate: Date;
-  setSelectedDate: (date: Date) => void;
-}) => {
+}: PrayerTrackerProps) => {
   const [selectedPrayer, setSelectedPrayer] = useState<Prayer | null>(null);
   const [prayerLogs, setPrayerLogs] = useState<PrayerLog[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [postError, setPostError] = useState<string | null>(null);
-  const userId: string | undefined = user?.id;
-  const userName: string | undefined | null = user?.name;
-  const userImage: string | undefined | null = user?.image;
 
-  // Fetch logs when selectedDate changes
-  useFetchPrayerLogs(userId, selectedDate, setPrayerLogs, setLoading, setError);
+  const userData = useMemo(
+    () => ({
+      id: user?.id,
+      name: user?.name,
+      image: user?.image,
+    }),
+    [user?.id, user?.name, user?.image]
+  );
 
-  const handleStatusSelect = (status: "ON_TIME" | "LATE" | "JAMAAH") => {
-    usePostPrayerStatus(
-      userId,
-      selectedDate,
-      selectedPrayer,
-      status,
-      setPrayerLogs,
-      setPostError,
-      setSelectedPrayer
-    );
-  };
+  useFetchPrayerLogs(
+    userData.id,
+    selectedDate,
+    setPrayerLogs,
+    setLoading,
+    setError
+  );
 
-  // Calendar strip
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  const weekDates = getWeekDates(today);
+  const handleStatusSelect = useCallback(
+    (status: "ON_TIME" | "LATE" | "JAMAAH") => {
+      usePostPrayerStatus(
+        userData.id,
+        selectedDate,
+        selectedPrayer,
+        status,
+        setPrayerLogs,
+        setPostError,
+        setSelectedPrayer
+      );
+    },
+    [userData.id, selectedDate, selectedPrayer]
+  );
+
+  const weekDates = useMemo(() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return getWeekDates(today);
+  }, []);
+
+  const today = useMemo(() => {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    return date;
+  }, []);
+
+  const isDrawerOpen = useMemo(() => !!selectedPrayer, [selectedPrayer]);
+
+  const handleDrawerClose = useCallback((isOpen: boolean) => {
+    if (!isOpen) setSelectedPrayer(null);
+  }, []);
 
   return (
     <>
-      <Drawer
-        open={!!selectedPrayer}
-        onOpenChange={(isOpen) => !isOpen && setSelectedPrayer(null)}
-      >
+      <Drawer open={isDrawerOpen} onOpenChange={handleDrawerClose}>
         <div className="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
           <div className="container mx-auto max-w-md p-4">
             <PrayerHeader
               selectedDate={selectedDate}
-              userName={userName}
-              userImage={userImage}
+              userName={userData.name}
+              userImage={userData.image}
             />
 
             <PrayerWeekNav
@@ -79,19 +115,29 @@ const PrayerTracker = ({
               setSelectedDate={setSelectedDate}
             />
 
-            {error || postError ? (
+            {(error || postError) && (
               <div className="bg-red-100 text-red-700 p-3 rounded-lg text-sm mb-4 text-center">
                 {error || postError}
               </div>
-            ) : null}
+            )}
 
-            <PrayerCardHolder
-              prayers={prayers}
-              prayerLogs={prayerLogs}
-              loading={loading}
-              setPostError={setPostError}
-              setSelectedPrayer={setSelectedPrayer}
-            />
+            <Suspense
+              fallback={
+                <div className="space-y-3">
+                  {prayers.map((prayer) => (
+                    <PrayerCardSkeleton key={`skeleton-${prayer.id}`} />
+                  ))}
+                </div>
+              }
+            >
+              <PrayerCardHolder
+                prayers={prayers}
+                prayerLogs={prayerLogs}
+                loading={loading}
+                setPostError={setPostError}
+                setSelectedPrayer={setSelectedPrayer}
+              />
+            </Suspense>
           </div>
         </div>
 

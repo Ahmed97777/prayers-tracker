@@ -1,8 +1,9 @@
+import { memo } from "react";
 import { DrawerTrigger } from "@/components/ui/drawer";
 import { statusStyles } from "@/utils/constants";
 import { Prayer } from "@/utils/types";
 
-const PrayerCard = ({
+const PrayerCard = memo(function PrayerCard({
   prayer,
   status,
   loading,
@@ -12,13 +13,16 @@ const PrayerCard = ({
   status: "ON_TIME" | "LATE" | "JAMAAH" | "UNSET";
   loading: boolean;
   onSelect: () => void;
-}) => {
+}) {
   const Icon = prayer.icon;
   const statusInfo = statusStyles[status];
   const StatusIcon = statusInfo.icon;
 
   const NoStatusInfo = statusStyles["UNSET"];
   const NoStatusIcon = NoStatusInfo.icon;
+
+  const displayStatusInfo = loading ? NoStatusInfo : statusInfo;
+  const DisplayStatusIcon = loading ? NoStatusIcon : StatusIcon;
 
   return (
     <DrawerTrigger asChild onClick={onSelect}>
@@ -37,28 +41,22 @@ const PrayerCard = ({
 
           <div className="flex items-center space-x-2">
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                loading ? NoStatusInfo.color : statusInfo.color
-              }`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center ${displayStatusInfo.color}`}
             >
-              {loading ? (
-                <NoStatusIcon size={16} className="text-white" />
-              ) : (
-                <StatusIcon size={16} className="text-white" />
-              )}
+              <DisplayStatusIcon size={16} className="text-white" />
             </div>
             <span
               className={`text-sm font-medium ${
-                loading ? "text-gray-400" : statusInfo.textColor
+                loading ? "text-gray-400" : displayStatusInfo.textColor
               } min-w-[70px]`}
             >
-              {loading ? "Loading..." : statusInfo.label}
+              {loading ? "Loading..." : displayStatusInfo.label}
             </span>
           </div>
         </div>
       </div>
     </DrawerTrigger>
   );
-};
+});
 
 export default PrayerCard;

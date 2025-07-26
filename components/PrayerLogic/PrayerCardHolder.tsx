@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, memo, useMemo, useCallback } from "react";
 import { Prayer, PrayerLog } from "@/utils/types";
 import PrayerCard from "./PrayerCard";
 
@@ -10,24 +10,35 @@ interface PrayerCardHolderProps {
   setSelectedPrayer: Dispatch<SetStateAction<Prayer | null>>;
 }
 
-export default function PrayerCardHolder({
+const PrayerCardHolder = memo(function PrayerCardHolder({
   prayers,
   prayerLogs,
   loading,
   setPostError,
   setSelectedPrayer,
 }: PrayerCardHolderProps) {
-  const getStatus = (
-    prayerId: number
-  ): "ON_TIME" | "LATE" | "JAMAAH" | "UNSET" => {
-    const log = prayerLogs.find((log) => log.prayerId === prayerId);
-    return log ? log.status : "UNSET";
-  };
+  const statusMap = useMemo(() => {
+    const map = new Map<number, "ON_TIME" | "LATE" | "JAMAAH" | "UNSET">();
+    prayerLogs.forEach((log) => {
+      map.set(log.prayerId, log.status);
+    });
+    return map;
+  }, [prayerLogs]);
 
-  const handleCardClick = (prayer: Prayer) => {
-    setPostError(null);
-    setSelectedPrayer(prayer);
-  };
+  const getStatus = useCallback(
+    (prayerId: number) => {
+      return statusMap.get(prayerId) || "UNSET";
+    },
+    [statusMap]
+  );
+
+  const handleCardClick = useCallback(
+    (prayer: Prayer) => {
+      setPostError(null);
+      setSelectedPrayer(prayer);
+    },
+    [setPostError, setSelectedPrayer]
+  );
 
   return (
     <div>
@@ -47,4 +58,6 @@ export default function PrayerCardHolder({
       </div>
     </div>
   );
-}
+});
+
+export default PrayerCardHolder;

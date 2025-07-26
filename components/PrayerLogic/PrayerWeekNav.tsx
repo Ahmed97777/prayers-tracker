@@ -1,13 +1,14 @@
+import { memo } from "react";
 import DayButton from "./DayButton";
 
 interface PrayerWeekNavProps {
   weekDates: Date[];
   today: Date;
   selectedDate: Date;
-  setSelectedDate: ((date: Date) => void) & ((date: Date) => void);
+  setSelectedDate: (date: Date) => void;
 }
 
-export default function PrayerWeekNav({
+const PrayerWeekNav = memo(function PrayerWeekNav({
   weekDates,
   today,
   selectedDate,
@@ -19,6 +20,7 @@ export default function PrayerWeekNav({
         {weekDates.map((date) => {
           const isToday = date.getTime() === today.getTime();
           const isSelected = date.getTime() === selectedDate.getTime();
+
           return (
             <DayButton
               key={date.toISOString()}
@@ -35,4 +37,6 @@ export default function PrayerWeekNav({
       </div>
     </div>
   );
-}
+});
+
+export default PrayerWeekNav;
