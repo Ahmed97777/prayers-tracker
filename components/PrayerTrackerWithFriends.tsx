@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import FriendsManagerWithShadcn from "./FriendsLogic/FriendsSharing";
 import PrayerTracker from "./PrayerLogic/PrayerTracker";
+import FriendsSharing from "./FriendsLogic/FriendsSharing";
 
 interface PrayerTrackerWithFriendsProps {
   user: any;
@@ -25,7 +25,7 @@ export default function PrayerTrackerWithFriends({
         setSelectedDate={setSelectedDate}
       />
 
-      <FriendsManagerWithShadcn user={user} selectedDate={selectedDate} />
+      <FriendsSharing user={user} selectedDate={selectedDate} />
     </>
   );
 }
